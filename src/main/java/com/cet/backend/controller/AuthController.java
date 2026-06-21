@@ -1,5 +1,7 @@
 package com.cet.backend.controller;
 
+import com.cet.backend.dto.LoginRequest;
+import com.cet.backend.dto.LoginResponse;
 import com.cet.backend.dto.RegisterRequest;
 import com.cet.backend.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -18,5 +20,10 @@ public class AuthController {
             @RequestBody RegisterRequest request) {
 
         return ResponseEntity.ok(authService.register(request));
+    }
+
+      @PostMapping("/login")
+    public LoginResponse login(@RequestBody LoginRequest request) {
+        return authService.login(request);
     }
 }
