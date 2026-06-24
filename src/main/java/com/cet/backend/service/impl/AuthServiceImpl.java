@@ -6,7 +6,6 @@ import com.cet.backend.dto.RegisterRequest;
 import com.cet.backend.entity.User;
 import com.cet.backend.repository.UserRepository;
 import com.cet.backend.service.AuthService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,21 +31,35 @@ public class AuthServiceImpl implements AuthService {
         return "User Registered Successfully";
     }
 
-    @Override
-    public LoginResponse login(LoginRequest request) {
+   @Override
+public LoginResponse login(LoginRequest request) {
 
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() ->
-                        new RuntimeException("Invalid Email"));
+    User user = userRepository.findByEmail(request.getEmail())
+            .orElse(null);
 
-        if (!user.getPassword().equals(request.getPassword())) {
-            throw new RuntimeException("Invalid Password");
-        }
-
+    if (user == null) {
         return new LoginResponse(
-                "Login Successful",
-                user.getEmail(),
-                user.getRole()
+                false,
+                "Invalid Email or Password",
+                null,
+                null
         );
     }
+
+    if (!user.getPassword().equals(request.getPassword())) {
+        return new LoginResponse(
+                false,
+                "Invalid Email or Password",
+                null,
+                null
+        );
+    }
+
+    return new LoginResponse(
+            true,
+            "Login Successful",
+            user.getEmail(),
+            user.getRole()
+    );
+}
 }
